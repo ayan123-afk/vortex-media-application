@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortex Media • Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #fafafa;
+            color: #262626;
+            line-height: 1.5;
+        }
+
+        /* NAVBAR - INSTAGRAM PREMIUM */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(219, 219, 219, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 8px 0;
+        }
+
+        .nav-container {
+            max-width: 975px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C, #FD1D1D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo h1:hover {
+            transform: scale(1.05);
+        }
+
+        .search-box {
+            background: #efefef;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 268px;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus-within {
+            background: white;
+            box-shadow: 0 0 0 2px rgba(0, 149, 246, 0.2);
+        }
+
+        .search-box i {
+            color: #8e8e8e;
+            font-size: 14px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            width: 100%;
+            color: #262626;
+        }
+
+        .search-box input::placeholder {
+            color: #8e8e8e;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-buttons a {
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .login-btn {
+            color: #262626;
+            background: transparent;
+            border: 1px solid #dbdbdb;
+        }
+
+        .login-btn:hover {
+            background: #fafafa;
+            border-color: #a8a8a8;
+        }
+
+        .signup-btn {
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            color: white !important;
+            border: none;
+            box-shadow: 0 4px 12px rgba(225, 48, 108, 0.2);
+        }
+
+        .signup-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(225, 48, 108, 0.3);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            max-width: 975px;
+            margin: 60px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content h2 {
+            font-size: 52px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: #8e8e8e;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-buttons .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            color: white;
+            box-shadow: 0 4px 12px rgba(225, 48, 108, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(225, 48, 108, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #262626;
+            border: 1px solid #dbdbdb;
+        }
+
+        .btn-secondary:hover {
+            background: #fafafa;
+            border-color: #a8a8a8;
+        }
+
+        .hero-image {
+            text-align: center;
+            animation: fadeInRight 0.8s ease;
+        }
+
+        .hero-image i {
+            font-size: 200px;
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+        }
+
+        /* FEATURES SECTION */
+        .features {
+            max-width: 975px;
+            margin: 100px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 16px;
+            padding: 40px 24px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.05);
+            border-color: transparent;
+        }
+
+        .feature-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 10px 20px rgba(225, 48, 108, 0.2);
+        }
+
+        .feature-icon i {
+            font-size: 32px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #262626;
+        }
+
+        .feature-card p {
+            color: #8e8e8e;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* STORIES SECTION */
+        .stories-preview {
+            max-width: 975px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .stories-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .stories-header h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .stories-header a {
+            color: #0095f6;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .stories-header a:hover {
+            color: #1877f2;
+            text-decoration: underline;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+        }
+
+        .story-item {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .story-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .story-ring {
+            width: 92px;
+            height: 92px;
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            transition: all 0.3s;
+        }
+
+        .story-item:hover .story-ring {
+            transform: scale(1.05);
+        }
+
+        .story-avatar {
+            width: 86px;
+            height: 86px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-avatar i {
+            font-size: 44px;
+            color: #8e8e8e;
+        }
+
+        .story-item span {
+            font-size: 13px;
+            color: #262626;
+            font-weight: 500;
+        }
+
+        /* CTA SECTION */
+        .cta-section {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid rgba(219, 219, 219, 0.5);
+            border-radius: 24px;
+            max-width: 975px;
+            margin: 80px auto;
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(64,93,230,0.03) 0%, rgba(225,48,108,0.03) 100%);
+            animation: rotate 30s linear infinite;
+        }
+
+        .cta-section h2 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: #8e8e8e;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .cta-buttons .btn {
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: white;
+            border-top: 1px solid #dbdbdb;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-container {
+            max-width: 975px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            color: #8e8e8e;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #262626;
+        }
+
+        .footer-copyright {
+            color: #8e8e8e;
+            font-size: 12px;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 975px) {
+            .hero-content h2 {
+                font-size: 44px;
+            }
+        }
+
+        @media (max-width: 735px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .stories-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .hero-content h2 {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-buttons a {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+
+            .cta-section {
+                padding: 60px 20px;
+            }
+
+            .cta-section h2 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>Vortex Media</h1>
+            </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search Vortex">
+            </div>
+
+            <div class="nav-buttons">
+                <a href="login.html" class="login-btn">Log In</a>
+                <a href="signup.html" class="signup-btn">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Share Your World</h2>
+            <h2>With Vortex Media</h2>
+            <p>Join the fastest growing creative community. Capture, edit, and share your moments with stunning filters and effects.</p>
+            <div class="hero-buttons">
+                <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <i class="fas fa-camera-retro"></i>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-camera"></i>
+            </div>
+            <h3>Pro Camera</h3>
+            <p>Professional-grade filters, editing tools, and AR effects to make your content stand out.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3>Global Community</h3>
+            <p>Connect with millions of creators. Share, like, comment and grow your audience.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Privacy First</h3>
+            <p>Advanced privacy controls. You decide who sees your content and when.</p>
+        </div>
+    </section>
+
+    <section class="stories-preview">
+        <div class="stories-header">
+            <h3>Trending Now 🔥</h3>
+            <a href="signup.html">View All →</a>
+        </div>
+        <div class="stories-grid">
+            <div class="story-item" onclick="showJoinAlert()">
+                <div class="story-ring">
+                    <div class="story-avatar">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <span>Photography</span>
+            </div>
+            <div class="story-item" onclick="showJoinAlert()">
+                <div class="story-ring">
+                    <div class="story-avatar">
+                        <i class="fas fa-umbrella-beach"></i>
+                    </div>
+                </div>
+                <span>Travel</span>
+            </div>
+            <div class="story-item" onclick="showJoinAlert()">
+                <div class="story-ring">
+                    <div class="story-avatar">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                </div>
+                <span>Food</span>
+            </div>
+            <div class="story-item" onclick="showJoinAlert()">
+                <div class="story-ring">
+                    <div class="story-avatar">
+                        <i class="fas fa-music"></i>
+                    </div>
+                </div>
+                <span>Music</span>
+            </div>
+            <div class="story-item" onclick="showJoinAlert()">
+                <div class="story-ring">
+                    <div class="story-avatar">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                </div>
+                <span>Art</span>
+            </div>
+            <div class="story-item" onclick="showJoinAlert()">
+                <div class="story-ring">
+                    <div class="story-avatar">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                </div>
+                <span>Fitness</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Ready to start your journey?</h2>
+        <p>Join 10M+ creators on Vortex Media. Sign up in 30 seconds - it's free!</p>
+        <div class="cta-buttons">
+            <a href="signup.html" class="btn btn-primary">Create Account →</a>
+            <a href="login.html" class="btn btn-secondary">Sign In</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Blog</a>
+                <a href="#">Careers</a>
+                <a href="#">Help</a>
+                <a href="#">API</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Locations</a>
+                <a href="#">Vortex Lite</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="footer-copyright">
+                © 2026 Vortex Media from Vercel
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQ_eQGOCjqLv8hXBGX88SKOmn4lAh4_Jk",
+            authDomain: "vortex-media-application.firebaseapp.com",
+            projectId: "vortex-media-application",
+            storageBucket: "vortex-media-application.firebasestorage.app",
+            messagingSenderId: "569398420999",
+            appId: "1:569398420999:web:4c6c73c4233e05468eaca2",
+            measurementId: "G-S3VVPLY901"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Check if user is logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Update nav buttons for logged in user
+                const navButtons = document.querySelector('.nav-buttons');
+                navButtons.innerHTML = `
+                    <a href="dashboard.html" style="color: #262626; text-decoration: none; font-weight: 600;">Dashboard</a>
+                    <button onclick="handleLogout()" style="background: none; border: 1px solid #dbdbdb; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">Log Out</button>
+                `;
+            }
+        });
+
+        // Logout function
+        window.handleLogout = function() {
+            Swal.fire({
+                title: 'Log out?',
+                text: 'Are you sure you want to log out?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#E1306C',
+                cancelButtonColor: '#8e8e8e',
+                confirmButtonText: 'Yes, log out'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    auth.signOut().then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Logged out!',
+                            text: 'See you again soon!',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    });
+                }
+            });
+        };
+
+        // Show join alert for stories
+        window.showJoinAlert = function() {
+            Swal.fire({
+                title: 'Join Vortex Media!',
+                text: 'Sign up to view stories and connect with creators',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#E1306C',
+                cancelButtonColor: '#8e8e8e',
+                confirmButtonText: 'Sign Up Now',
+                cancelButtonText: 'Later'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'signup.html';
+                }
+            });
+        };
+    </script>
+</body>
+</html>
