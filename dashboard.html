@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortex Media • Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafafa;
+            color: #262626;
+        }
+
+        /* Instagram-like navbar */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #dbdbdb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 8px 0;
+        }
+
+        .nav-container {
+            max-width: 975px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .logo h2 {
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #405DE6, #833AB4, #E1306C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+        }
+
+        .nav-icons i {
+            font-size: 22px;
+            color: #262626;
+            cursor: pointer;
+        }
+
+        .nav-icons button {
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #0095f6;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .nav-icons button:hover {
+            background: #f5f5f5;
+        }
+
+        /* Dashboard layout */
+        .dashboard-container {
+            max-width: 935px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        /* Profile card (Instagram style) */
+        .profile-card {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 12px;
+            padding: 30px 24px;
+            text-align: center;
+            height: fit-content;
+        }
+
+        .profile-pic-wrapper {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+
+        #profilePic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f5f5f5;
+            background: #fafafa;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #0095f6;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: background 0.2s;
+        }
+
+        .upload-overlay:hover {
+            background: #1877f2;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .user-info {
+            margin-top: 16px;
+        }
+
+        #username {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        #email {
+            color: #8e8e8e;
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+
+        .edit-section {
+            border-top: 1px solid #efefef;
+            padding-top: 24px;
+            margin-top: 8px;
+        }
+
+        .edit-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: #fafafa;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .save-btn {
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .save-btn:hover {
+            background: #1877f2;
+        }
+
+        /* Feed placeholder (Instagram vibe) */
+        .feed {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #8e8e8e;
+            height: fit-content;
+        }
+
+        .feed i {
+            font-size: 48px;
+            color: #dbdbdb;
+            margin-bottom: 16px;
+        }
+
+        .feed p {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #262626;
+        }
+
+        .feed span {
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #e6f7e6;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @media (max-width: 735px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Instagram-like Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h2>Vortex Media</h2>
+            </div>
+            <div class="nav-icons">
+                <i class="fas fa-home"></i>
+                <i class="fas fa-compass"></i>
+                <i class="fas fa-heart"></i>
+                <button id="logoutBtn">Log out</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Main -->
+    <div class="dashboard-container">
+        <!-- Profile Card (Left) -->
+        <div class="profile-card">
+            <div class="profile-pic-wrapper">
+                <img id="profilePic" src="https://firebasestorage.googleapis.com/v0/b/vortex-media-application.appspot.com/o/default-profile.png?alt=media" alt="Profile">
+                <label for="fileInput" class="upload-overlay">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+
+            <div class="user-info">
+                <div id="username">@loading...</div>
+                <div id="email">loading...</div>
+            </div>
+
+            <!-- Edit Profile Section -->
+            <div class="edit-section">
+                <h3>Edit profile</h3>
+                <input type="text" id="newUsername" class="edit-input" placeholder="New username">
+                <button id="updateUsernameBtn" class="save-btn">Update username</button>
+                
+                <div id="successMessage" class="success-message"></div>
+            </div>
+        </div>
+
+        <!-- Feed Placeholder (Right) - Instagram vibe -->
+        <div class="feed">
+            <i class="fas fa-camera"></i>
+            <p>Your feed</p>
+            <span>Your posts, stories and moments will appear here.</span>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQ_eQGOCjqLv8hXBGX88SKOmn4lAh4_Jk",
+            authDomain: "vortex-media-application.firebaseapp.com",
+            projectId: "vortex-media-application",
+            storageBucket: "vortex-media-application.firebasestorage.app",
+            messagingSenderId: "569398420999",
+            appId: "1:569398420999:web:4c6c73c4233e05468eaca2",
+            measurementId: "G-S3VVPLY901"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Check auth state and load user data
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display user info
+            document.getElementById('username').innerText = user.displayName || '@user';
+            document.getElementById('email').innerText = user.email;
+
+            // Load from Firestore
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.username) document.getElementById('username').innerText = '@' + data.username;
+                    if (data.email) document.getElementById('email').innerText = data.email;
+                    if (data.profilePic) {
+                        document.getElementById('profilePic').src = data.profilePic;
+                    } else if (user.photoURL) {
+                        document.getElementById('profilePic').src = user.photoURL;
+                    }
+                }
+            } catch (error) {
+                console.log("Firestore read error, using auth data");
+            }
+
+            // Update username functionality
+            document.getElementById('updateUsernameBtn').addEventListener('click', async () => {
+                const newUsername = document.getElementById('newUsername').value.trim();
+                if (!newUsername) return;
+
+                const successEl = document.getElementById('successMessage');
+                try {
+                    // Update Auth profile
+                    await updateProfile(user, { displayName: newUsername });
+                    // Update Firestore
+                    await updateDoc(doc(db, 'users', user.uid), {
+                        username: newUsername
+                    });
+                    document.getElementById('username').innerText = '@' + newUsername;
+                    successEl.textContent = 'Username updated successfully!';
+                    successEl.classList.add('show');
+                    document.getElementById('newUsername').value = '';
+                    setTimeout(() => successEl.classList.remove('show'), 3000);
+                } catch (error) {
+                    successEl.style.background = '#ffebee';
+                    successEl.style.color = '#c62828';
+                    successEl.textContent = 'Error: ' + error.message;
+                    successEl.classList.add('show');
+                    setTimeout(() => successEl.classList.remove('show'), 3000);
+                }
+            });
+
+            // Profile picture upload
+            const fileInput = document.getElementById('fileInput');
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const successEl = document.getElementById('successMessage');
+                try {
+                    const storageRef = ref(storage, `profile_pics/${user.uid}`);
+                    await uploadBytes(storageRef, file);
+                    const downloadURL = await getDownloadURL(storageRef);
+                    
+                    // Update profile in Auth
+                    await updateProfile(user, { photoURL: downloadURL });
+                    // Update Firestore
+                    await updateDoc(doc(db, 'users', user.uid), {
+                        profilePic: downloadURL
+                    });
+                    document.getElementById('profilePic').src = downloadURL;
+                    
+                    successEl.textContent = 'Profile picture updated!';
+                    successEl.classList.add('show');
+                    setTimeout(() => successEl.classList.remove('show'), 3000);
+                } catch (error) {
+                    successEl.style.background = '#ffebee';
+                    successEl.style.color = '#c62828';
+                    successEl.textContent = 'Upload failed: ' + error.message;
+                    successEl.classList.add('show');
+                    setTimeout(() => successEl.classList.remove('show'), 3000);
+                }
+            });
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Logout error', error);
+            }
+        });
+    </script>
+</body>
+</html>
