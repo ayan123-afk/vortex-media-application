@@ -307,17 +307,15 @@
         import { getAuth, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDQ_eQGOCjqLv8hXBGX88SKOmn4lAh4_Jk",
-            authDomain: "vortex-media-application.firebaseapp.com",
-            projectId: "vortex-media-application",
-            storageBucket: "vortex-media-application.firebasestorage.app",
-            messagingSenderId: "569398420999",
-            appId: "1:569398420999:web:4c6c73c4233e05468eaca2",
-            measurementId: "G-S3VVPLY901"
-        };
-
+const firebaseConfig = {
+  apiKey: "AIzaSyAZExuEqOe3flzuHHDQfa4mSZWbCRLgLoc",
+  authDomain: "vortex-media-app1.firebaseapp.com",
+  projectId: "vortex-media-app1",
+  storageBucket: "vortex-media-app1.firebasestorage.app",
+  messagingSenderId: "961829584950",
+  appId: "1:961829584950:web:51d000a6af05c6ebb8d897",
+  measurementId: "G-QD20DQRNXQ"
+};
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
